@@ -1,7 +1,7 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import './ProductList.css'
 import CartItem from './CartItem';
-import { PlantInCart } from './CartItem';
+// import { PlantInCart } from './CartItem';
 
 function ProductList() {
     const [showCart, setShowCart] = useState(false); 
@@ -267,7 +267,7 @@ function ProductList() {
         return {backgroundColor:'#b2aeab'}
     }
 
-    //console.log(plantsInCart)
+    // console.log(plantsInCart)
     return (
         <exportPlantList.Provider value={plantsInCart} >
             <div>
@@ -313,6 +313,7 @@ function ProductList() {
                             <div className="product-card" key={plantIndex}>
                                 <img className="product-image" src={plant.image} alt={plant.name} />
                                 <div className="product-title">{plant.name}</div>
+                                <p className="product-description">{plant.description}</p>
                                 {/*Similarly like the above plant.name show other details like description and cost*/}
                                 <button  
                                     className="product-button" disabled={changeDisableAttributeInButton(plant.name)}

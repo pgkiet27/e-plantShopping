@@ -3,12 +3,11 @@ import './CartItem.css';
 import { exportPlantList } from './ProductList';
 
 const CartItem = () => {
-  const [plantInfo, setPlantInfo] = useState([])
-  const [showCart, setShowCart] = useState(false)
   var cart = useContext(exportPlantList)
 
-  
-  // console.log(plantInfo)
+  const [plantInfo, setPlantInfo] = useState([])
+  const [showCart, setShowCart] = useState(false)
+
   useEffect(() => {
     const plantsArray = []
     cart.map((product, productID) => {
@@ -17,11 +16,12 @@ const CartItem = () => {
     setPlantInfo(plantsArray)
   }, [])
   
-  function getEachProductQuantity(id){
-    if(plantInfo.length !== 0){
-      //console.log(plantInfo)
-      const product = plantInfo.find(plant => plant.id === id)
-      return product.quantity
+  function getEachProductQuantity(name){
+    if(plantInfo.length !== 0 && cart.length !== 0){
+      const product = plantInfo.find(plant => plant.name === name)
+      if(product !== undefined)
+        return product.quantity
+      return 0  
     } 
   }
 
@@ -72,16 +72,21 @@ const CartItem = () => {
     }
   };
 
-  const handleRemove = (id) => {
-    cart = cart.splice(id, 1)
-    setPlantInfo(plantInfo.splice(id, 1))
+  var handleRemove = (name) => {
+    const object = cart.find(plant => plant.name === name)
+    const result = cart.indexOf(object)
+    cart.splice(result, 1)
+    
+    setPlantInfo(plants => (
+      plants.filter(plant => plant.name !== name)
+    ))
   };
 
   // Calculate total cost based on quantity for an item
-  const calculateTotalCost = (id) => {
+  const calculateTotalCost = (name, id) => {
     if(cart.length !== 0 && plantInfo.length !== 0){
-      const result = plantInfo.find(product => product.id === id)
-      return result.quantity * Number(cart[id].cost.slice(1))
+      const result = plantInfo.find(product => product.name === name)
+      return result.quantity * Number(cart.find(plant => plant.name === name).cost.slice(1))
     }
   };
 
@@ -100,12 +105,12 @@ const CartItem = () => {
                 <div className="cart-item-quantity">
                   <button className="cart-item-button cart-item-button-dec" onClick={() => handleDecrement(id)}>-</button>
                   <span className="cart-item-quantity-value">{  
-                    getEachProductQuantity(id)
+                    getEachProductQuantity(item.name)
                   }</span>
                   <button className="cart-item-button cart-item-button-inc" onClick={() => handleIncrement(id)}>+</button>
                 </div>
-                <div className="cart-item-total">Total: ${calculateTotalCost(id)}</div>
-                <button className="cart-item-delete" onClick={() => handleRemove(item)}>Delete</button>
+                <div className="cart-item-total">Total: ${calculateTotalCost(item.name, id)}</div>
+                <button className="cart-item-delete" onClick={() => handleRemove(item.name)}>Delete</button>
               </div>
             </div>
           ))}
